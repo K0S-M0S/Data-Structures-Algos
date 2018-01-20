@@ -1,0 +1,61 @@
+
+=============================== RADIX SORT REPORT ===============================
+
+--------------------------------- INSTRUCTIONS: ---------------------------------
+The main method is located in the file "SortingTester.java".
+To compile the program, use the following command: "javac SortingTester.java".
+To run the code: "java SortingTester".
+
+
+----------------- TESTING PROCEDURE AND ADDITIONAL INFORMATION: -----------------
+The tests have been performed on arrays of random integers from 0 to size-1.
+Each sorting algorithm has been run five times, and the median execution times
+for each tested array size across the runs are reported below.
+The array sizes tested are 1,000,000, 100,000, 10,000, 1,000 and 100,
+exactly in this order, as it seems to increase the level of code optimization.
+
+
+----------------------------------- RESULTS: ------------------------------------
+Chosen hyperparameters for MSD radix sort:
+Number of bits per digit: 9 bits;
+Threshold segment size: 31 items.
+
+COMPUTED COMPARISON TABLE:
+Array size:     	    100	   1000	  10000	 100000	 1000000
+Radix Sort (ms):	  0.001	  0.011	  0.093	  0.988	  23.545
+Qucksort (ms):  	  0.004	  0.053	  0.618	  7.617	  93.220
+Speed-up:       	  3.818	  4.980	  6.653	  7.710	   3.959
+
+
+---------------------------------- COMMENTARY: ----------------------------------
+MSD radix sort (or any radix sort) is more efficient than quicksort if the
+elements of the array to be sorted are words that consist of letters/digits from
+the same alphabet or can be represented in this way. Integer sorting is obviously
+one of such cases.
+
+Instead of comparing elements to each other like quicksort does, radix sort
+places elements based on the values of their digits and only then, in some
+implementations, uses comparisons on small segments of the array. This is much
+more efficient, because sparing use of element comparisons removes the lower
+boundary limit of O(n*log(n)) that algorithms like quicksort possess.
+
+Finally, insertion sorting of small segments can make radix sort even faster:
+even though comparison-based sorting algorithms are quite costly (insertion sort
+is O(n^2)), they have better low-degree terms and constants which are not
+included in "big O notation". This means they are better at sorting a small
+number of elements.
+
+Another important detail is that many implementations of radix sort do not lose
+their stability. The submitted code appears to have this property, as evidenced
+by lines 83-86 in "MSDRadixSorter.java":
+
+#  for (int i = left; i <= right; i++) { #
+#    int digit = (a[i] >> shift) & mask; #
+#    b[left + count[digit]++] = a[i];    #
+#  }                                     #
+
+One can imagine that if several items were sorted by a certain property, and the
+values for that property were the same for all of the items, their order would
+be preserved if they were to be stored in a buffer like this.
+
+=================================================================================
